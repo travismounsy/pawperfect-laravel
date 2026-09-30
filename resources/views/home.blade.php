@@ -40,6 +40,17 @@
         <div class="service">
             <h3>{{ $service->name }}</h3>
 <p>Price: ${{ number_format($service->price, 2) }}</p>
+<a href="{{ route('services.edit', $service) }}">Edit</a>
+<form
+    action="{{ route('services.destroy', $service) }}"
+    method="POST"
+    onsubmit="return confirm('Delete this service?');"
+>
+    @csrf
+    @method('DELETE')
+
+    <button type="submit">Delete</button>
+</form>
         </div>
     @endforeach
 </body>
