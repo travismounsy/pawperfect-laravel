@@ -7,20 +7,22 @@ use App\Http\Controllers\AuthController;
 Route::get('/', [ServiceController::class, 'index'])
     ->name('services.index');
 
-Route::get('/services/create', [ServiceController::class, 'create'])
-    ->name('services.create');
+Route::middleware(['auth', 'can:manage-services'])->group(function () {
+    Route::get('/services/create', [ServiceController::class, 'create'])
+        ->name('services.create');
 
-Route::post('/services', [ServiceController::class, 'store'])
-    ->name('services.store');
+    Route::post('/services', [ServiceController::class, 'store'])
+        ->name('services.store');
 
-Route::get('/services/{service}/edit', [ServiceController::class, 'edit'])
-    ->name('services.edit');
+    Route::get('/services/{service}/edit', [ServiceController::class, 'edit'])
+        ->name('services.edit');
 
-Route::put('/services/{service}', [ServiceController::class, 'update'])
-    ->name('services.update');
+    Route::put('/services/{service}', [ServiceController::class, 'update'])
+        ->name('services.update');
 
-Route::delete('/services/{service}', [ServiceController::class, 'destroy'])
-    ->name('services.destroy');
+    Route::delete('/services/{service}', [ServiceController::class, 'destroy'])
+        ->name('services.destroy');
+});
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->middleware('guest')

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
 
 
 namespace Tests\Feature;
@@ -12,10 +13,72 @@ namespace Tests\Feature;
 use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
 
 class ServiceTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $this->actingAs($admin);
+    }
+
+    public function test_guest_cannot_create_service(): void
+    {
+        $this->app['auth']->forgetGuards();
+
+        $this->post(route('services.store'), [
+            'name' => 'Unauthorized Service',
+            'price' => 25,
+        ])->assertRedirect(route('login'));
+
+        $this->assertDatabaseCount('services', 0);
+    }
+
+    public function test_non_admin_cannot_manage_services(): void
+    {
+        $customer = User::factory()->create([
+            'is_admin' => false,
+        ]);
+
+        $service = Service::create([
+            'name' => 'Bath and Brush',
+            'price' => 30,
+        ]);
+
+        $this->actingAs($customer);
+
+        $this->get(route('services.create'))->assertForbidden();
+        $this->get(route('services.edit', $service))->assertForbidden();
+
+        $this->post(route('services.store'), [
+            'name' => 'Unauthorized Service',
+            'price' => 25,
+        ])->assertForbidden();
+
+        $this->put(route('services.update', $service), [
+            'name' => 'Unauthorized Change',
+            'price' => 1,
+        ])->assertForbidden();
+
+        $this->delete(route('services.destroy', $service))
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('services', 1);
+
+        $this->assertDatabaseHas('services', [
+            'id' => $service->id,
+            'name' => 'Bath and Brush',
+            'price' => 30,
+        ]);
+    }
 
     public function test_home_page_displays_services(): void
     {

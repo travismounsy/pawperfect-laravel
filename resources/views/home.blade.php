@@ -27,40 +27,47 @@
         <h1>PawPerfect Pet Grooming</h1>
         <p>Keep your pets looking and feeling their best.</p>
 
-        <p>
-        <a href="{{ route('services.create') }}">Add a service</a>
-        </p>
+        @can('manage-services')
+            <p>
+                <a href="{{ route('services.create') }}">Add a service</a>
+            </p>
+        @endcan
 
         @if (session('success'))
             <p>{{ session('success') }}</p>
         @endif
-            <h2>Our Services</h2>
+
+        <h2>Our Services</h2>
 
         @foreach ($services as $service)
             <div class="service">
                 <h3>{{ $service->name }}</h3>
                 <p>Price: ${{ number_format($service->price, 2) }}</p>
-                <a href="{{ route('services.edit', $service) }}">Edit</a>
-                <form
-                    action="{{ route('services.destroy', $service) }}"
-                    method="POST"
-                    onsubmit="return confirm('Delete this service?');"
-                >
-                    @csrf
-                    @method('DELETE')
 
-                    <button type="submit">Delete</button>
-                </form>
+                @can('manage-services')
+                    <a href="{{ route('services.edit', $service) }}">Edit</a>
+
+                    <form
+                        action="{{ route('services.destroy', $service) }}"
+                        method="POST"
+                        onsubmit="return confirm('Delete this service?');"
+                    >
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="submit">Delete</button>
+                    </form>
+                @endcan
             </div>
         @endforeach
 
         @auth
-        <p>Welcome, {{ auth()->user()->name }}!</p>
+            <p>Welcome, {{ auth()->user()->name }}!</p>
 
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit">Logout</button>
-        </form>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit">Logout</button>
+            </form>
         @else
             <p><a href="{{ route('login') }}">Login</a></p>
         @endauth
