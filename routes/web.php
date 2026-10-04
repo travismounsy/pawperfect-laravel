@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', [ServiceController::class, 'index'])
     ->name('services.index');
@@ -20,3 +21,15 @@ Route::put('/services/{service}', [ServiceController::class, 'update'])
 
 Route::delete('/services/{service}', [ServiceController::class, 'destroy'])
     ->name('services.destroy');
+
+Route::get('/login', [AuthController::class, 'showLogin'])
+    ->middleware('guest')
+    ->name('login');
+
+Route::post('/login', [AuthController::class, 'login'])
+    ->middleware(['guest', 'throttle:5,1'])
+    ->name('login.store');
+
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
