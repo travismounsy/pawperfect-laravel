@@ -3,6 +3,7 @@
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PetController;
 
 Route::get('/', [ServiceController::class, 'index'])
     ->name('services.index');
@@ -43,3 +44,13 @@ Route::get('/register', [AuthController::class, 'showRegister'])
 Route::post('/register', [AuthController::class, 'register'])
     ->middleware(['guest', 'throttle:5,1'])
     ->name('register.store');
+Route::middleware('auth')->group(function () {
+    Route::get('/pets', [PetController::class, 'index'])
+        ->name('pets.index');
+
+    Route::get('/pets/create', [PetController::class, 'create'])
+        ->name('pets.create');
+
+    Route::post('/pets', [PetController::class, 'store'])
+        ->name('pets.store');
+});

@@ -63,6 +63,7 @@
 
         @auth
             <p>Welcome, {{ auth()->user()->name }}!</p>
+            <p><a href="{{ route('pets.index') }}">My Pets</a></p>
 
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
