@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     Gate::define('manage-services', function (User $user): bool {
-        return $user->is_admin;
+    return $user->is_admin === true;
     });
     }
 }

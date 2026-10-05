@@ -69,7 +69,11 @@
                 <button type="submit">Logout</button>
             </form>
         @else
-            <p><a href="{{ route('login') }}">Login</a></p>
+            <p>
+                <a href="{{ route('login') }}">Login</a>
+                |
+                <a href="{{ route('register') }}">Create an account</a>
+            </p>
         @endauth
     </body>
 </html>

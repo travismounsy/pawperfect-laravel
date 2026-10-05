@@ -46,5 +46,8 @@
     </form>
 
     <p><a href="{{ route('services.index') }}">Back to services</a></p>
+
+    <p>New to PawPerfect?<a href="{{ route('register') }}">Create an account</a>
+</p>
 </body>
 </html>

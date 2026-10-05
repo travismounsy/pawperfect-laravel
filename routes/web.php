@@ -35,3 +35,11 @@ Route::post('/login', [AuthController::class, 'login'])
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
+Route::get('/register', [AuthController::class, 'showRegister'])
+    ->middleware('guest')
+    ->name('register');
+
+Route::post('/register', [AuthController::class, 'register'])
+    ->middleware(['guest', 'throttle:5,1'])
+    ->name('register.store');
